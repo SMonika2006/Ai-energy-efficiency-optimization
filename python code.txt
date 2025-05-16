@@ -1,0 +1,36 @@
+import datetime
+
+# Simulated appliance data
+appliances = {
+    "Air Conditioner": {"power_watts": 1500, "hours": 5},
+    "Fan": {"power_watts": 75, "hours": 8},
+    "Light": {"power_watts": 18, "hours": 6},
+    "TV": {"power_watts": 100, "hours": 4},
+}
+
+# Assuming standard voltage (India: 230V)
+VOLTAGE = 230
+
+# Function to calculate current and display results
+def display_energy_report(appliances):
+    print("=== AI-Based Energy Efficiency Report ===")
+    print("Date:", datetime.date.today())
+    print("----------------------------------------")
+    print("{:<20} {:<12} {:<15} {:<15}".format("Appliance", "Power (W)", "Hours Used", "Current (A)"))
+    print("-" * 65)
+
+    for name, data in appliances.items():
+        power = data.get("power_watts", 0)
+        hours = data.get("hours", 0)
+        try:
+            current = round(power / VOLTAGE, 2)
+        except ZeroDivisionError:
+            current = 0
+        print("{:<20} {:<12} {:<15} {:<15}".format(name, power, hours, current))
+
+    print("-" * 65)
+    print("Tip: Reduce usage duration or use efficient appliances to save energy.")
+
+# Run it
+if __name__ == "__main__":
+    display_energy_report(appliances)
