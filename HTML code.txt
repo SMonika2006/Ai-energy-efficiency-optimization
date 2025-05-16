@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Energy Efficiency Chatbot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f1f1f1;
+      padding: 30px;
+    }
+    .chatbox {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+    .message {
+      padding: 10px 15px;
+      border-radius: 10px;
+      margin: 10px 0;
+      max-width: 80%;
+      line-height: 1.5;
+    }
+    .bot {
+      background: #e1f5fe;
+      align-self: flex-start;
+    }
+    .user {
+      background: #dcedc8;
+      align-self: flex-end;
+      text-align: right;
+      margin-left: auto;
+    }
+    .timeline {
+      display: flex;
+      flex-direction: column;
+    }
+    .input-box {
+      margin-top: 20px;
+      display: flex;
+    }
+    input {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 15px;
+      background-color: #00796b;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="chatbox">
+    <h2>⚡ Energy Efficiency Chatbot</h2>
+    <div class="timeline" id="chat"></div>
+
+    <div class="input-box">
+      <input type="text" id="userInput" placeholder="Type appliance name or 'start timeline'">
+      <button onclick="chat()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    const chatBox = document.getElementById('chat');
+
+    const electricityRate = 6; // ₹ per kWh
+
+    const applianceData = {
+      fan: { watt: 75, tips: "Use ceiling fans instead of air conditioners when possible." },
+      light: { watt: 15, tips: "Use LED bulbs and turn them off when not in use." },
+      ac: { watt: 1500, tips: "Set temperature to 24°C and use energy-saving mode." },
+      fridge: { watt: 200, tips: "Keep the door closed and clean the coils regularly." },
+      tv: { watt: 100, tips: "Turn off at the switch when not in use." },
+      washingmachine: { watt: 500, tips: "Use full loads and wash with cold water." }
+    };
+
+    const timelineSteps = [
+      "Step 1: Collecting real-time data from smart meters and sensors.",
+      "Step 2: AI analyzes usage trends and detects inefficient appliances.",
+      "Step 3: Suggestions are generated based on consumption patterns.",
+      "Step 4: User receives real-time alerts and daily optimization tips.",
+      "Step 5: Monthly report is generated showing savings and improvements.",
+      "Final Step: AI continues learning and optimizing usage daily."
+    ];
+
+    let step = 0;
+    let timelineMode = false;
+
+    function addMessage(text, sender) {
+      const msg = document.createElement('div');
+      msg.className = message ${sender};
+      msg.innerText = text;
+      chatBox.appendChild(msg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function chat() {
+      const input = document.getElementById('userInput');
+      const userText = input.value.trim().toLowerCase();
+      if (userText !== '') {
+        addMessage(userText, 'user');
+        input.value = '';
+
+        setTimeout(() => {
+          if (userText === "start timeline") {
+            timelineMode = true;
+            step = 0;
+            addMessage("Starting the energy optimization timeline...", 'bot');
+            showNextTimelineStep();
+          } else if (timelineMode && step < timelineSteps.length) {
+            showNextTimelineStep();
+          } else if (applianceData[userText]) {
+            const data = applianceData[userText];
+            const kWh = data.watt / 1000; // Convert watt to kWh
+            const costPerHour = (kWh * electricityRate).toFixed(2);
+            addMessage(
+              🔌 Appliance: ${userText.toUpperCase()}\n⚡ Power Usage: ${data.watt}W\n💸 Cost per hour: ₹${costPerHour}\n💡 Tip: ${data.tips},
+              'bot'
+            );
+          } else {
+            addMessage("I don't recognize that appliance. Try 'fan', 'light', 'ac', 'fridge', 'tv', or 'washingmachine'.", 'bot');
+          }
+        }, 800);
+      }
+    }
+
+    function showNextTimelineStep() {
+      if (step < timelineSteps.length) {
+        addMessage(timelineSteps[step], 'bot');
+        step++;
+      } else {
+        addMessage("✅ Timeline complete. Ask about any appliance now!", 'bot');
+        timelineMode = false;
+      }
+    }
+
+    // Start with a welcome message
+    setTimeout(() => {
+      addMessage("👋 Hello! I'm your AI assistant for energy efficiency.", 'bot');
+      setTimeout(() => addMessage("Type the name of an appliance (e.g., fan, ac, fridge) or type 'start timeline' to begin.", 'bot'), 1000);
+    }, 500);
+  </script>
+
+</body>
+</html>
